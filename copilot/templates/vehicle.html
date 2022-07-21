@@ -1,0 +1,415 @@
+{% extends "base.html" %}
+{% block content %}
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+  <div class="container" style="width:80%;">
+    <div class="row"> 
+      <div class="col-md-12"><br>
+        <div class="form-inline">
+          <div class="form-group">
+            <label class="group-label">
+              Control Mode Help
+              <a data-toggle="modal" class="btn btn-primary btn-xs" data-target="#aboutControlModes">
+                <span class="glyphicon glyphicon-info-sign"></span>
+              </a>
+            </label>
+            <br/>
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-primary" id="joystick-toggle">
+                <input type="radio" name="controlMode" id="joystick" autocomplete="off" value="joystick"> Joystick
+              </label>
+              <label class="btn btn-primary" id="gamepad-toggle">
+                <input type="radio" name="controlMode" id="gamepad" autocomplete="off" value="gamepad"> Gamepad
+              </label>
+              <label class="btn btn-primary" id="tilt-toggle">
+                <input type="radio" name="controlMode" id="tilt" autocomplete="off" value="tilt">Device Tilt
+              </label>
+            </div>
+          </div>
+          <div class="form-group" style="max-width:30%;">
+            <label class="group-label">Max Throttle</label><br/>
+            <div class="form-group">
+              <select id="max_throttle_select" class="form-control">
+                <option disabled selected> Select Max Throttle </option>
+                {% for t in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 100] %}
+                  <option value="{{ t / 100.0 }}">{{ t }}%</option>
+                {% end %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="max-width:30%;">
+            <label class="group-label">Throttle Mode</label><br/>
+            <div class="form-group">
+              <select id="throttle_mode_select" class="form-control">
+                <option value="user" selected>User</option>
+                <option value="constant">Constant (Selected Max)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="width:30%;">
+            <label class="group-label">Model : <span id="confui_model">{{ confui_model }}</span></label>
+            <div class="form-group">            
+              <span><button type="button" onclick="saveconfig(this)" class="btn btn-sm"> Save config (<span id="configname">{{ confui_name }}</span>)</button>      </span>
+              <select class="form-control form-control-lg" onchange="loadconfig(value);" aria-label="Load config">   
+                <option selected>Load Config</option>
+                {% for t in confui_list %}  
+                  <option  value="{{t}}">{{t}}</option> 
+                {%end%}
+             </select>     
+            </div>          
+          </div>
+          <div class="form-group" style="max-width:20%;">
+            <div class="stepbloc" {{ "style=display:none;" if not COPILOT_STEPCOUNTER else '' }} >
+              <label class="group-label">Step Control</label><br/>
+              <div class="form-group">
+                <button onclick="restartrace()" class="btn btn-sm">Init new race</button>
+                <button class="reportbtn" style=display:none; onClick='javascript:$("#modalreport").modal("show");' class="btn btn-sm">Race result</button>
+                <span><input onclick="clickvalue(this)" type="checkbox" id="COPILOT_SKIP_GREEN" >&nbsp;SKIP_GREEN</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-xs-4 col-sm-2 col-md-2">
+        <div id="control-bars">
+          <label class="group-label">Angle &amp; Throttle</label>
+          <div>
+            <span class="glyphicon glyphicon-resize-horizontal pull-left"></span>
+            <div class="progress negative">
+              <div id="angle-bar-backward" class="progress-bar progress-bar-warning pull-right" role="progressbar" style="width: 0%;">
+              </div>
+            </div>
+            
+            <div class="progress positive">
+              <div id="angle-bar-forward" class="progress-bar progress-bar-info" role="progressbar" style="width: 0%;">
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <span class="glyphicon glyphicon-resize-vertical pull-left"></span>
+            <div class="progress negative">
+              <div id="throttle-bar-backward" class="progress-bar progress-bar-danger pull-right" role="progressbar" style="width: 0%;">
+              </div>
+            </div>
+            
+            <div class="progress positive">
+              <div id="throttle-bar-forward" class="progress-bar progress-bar-success" role="progressbar" style="width: 0%;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form>
+          <label>Pilot Mode [m]</label>
+          <div class="form-group">
+            <select id="mode_select" class="form-control">
+              <option disabled selected> Select Mode [m]</option>
+              <option value="user">User [u]</option>
+              <option value="local">Full Auto [a]</option>
+              <option value="local_angle">Auto Steering [s]</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <button type="button" id="record_button" class="btn btn-info btn-block">
+              Start Recording [r]
+            </button>
+          </div>
+          
+          <div class="form-group">
+            <center><label style="width:100%;"><span style="float:left;">٩(●̮̮̃•̃)۶</span> COPILOT toolz <span style="float:right;">٩(●̮̮̃•̃)۶</span></label></center>
+            <small>
+            <input onclick="clickvalue(this)" type="checkbox" id="COPILOT_TRANSFORM" >&nbsp;<label>TRANSFORM</label><br>
+            <input onclick="clickvalue(this)" type="checkbox" id="COPILOT_STEPCOUNTER" >&nbsp;<label>STEPCOUNTER</label><br>
+            <input onclick="clickvalue(this)" type="checkbox" id="COPILOT_PROTOXYDE" >&nbsp;<label>PROTOXYDE</label><br>
+            <input onclick="clickvalue(this)" type="checkbox" id="COPILOT_HW_INFO" >&nbsp;<label>Hardware INFO</label><br>
+          </small>
+          </div>
+        </form>
+        
+      </div>
+      
+      <div class="col-xs-3 col-sm-4 col-md-4"><!-- center column -->
+        <div class="thumbnail">
+          <img id='mpeg-image', class='img-responsive' src="/video"/> </img>
+        </div>
+      </div><!-- end center column -->
+
+      <div id="joystick-column" class="col-xs-3 col-sm-4 col-md-4"> 
+        <div class="thumbnail">
+          <div id="joystick_container">
+            <p>Click/touch to use joystick.</p>
+          </div>
+        </div><!-- end right col -->
+      </div><!-- end right col -->
+      <div class="col-xs-6 col-sm-2 col-md-2">
+          <div class="form-group">
+            <span style="float:right;"><small><i><input type="checkbox" name="jsupdate" checked>&nbsp;&nbsp;js update</i></small></span>
+            <div id="debuginfo"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="row">
+      <p  style="text-align:center;color:rgb(255, 27, 65)">Caution: If a Physical Joystick is Used, It overides the Web Controller.</p>
+    </div> -->
+    <div id="joystick-padding"></div>
+    
+  </div> <!-- END Container -->
+  <footer class="footer" id="vehicle_footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <button type="button" id="brake_button" class="btn btn-lg btn-success btn-block">Start Vehicle (space)</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal fade" id="aboutControlModes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">About Control Modes</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+            <strong>Joystick</strong> control is provided via the blue touch/click area on screen. Click or touch and drag to control throttle and steering. In joystick mode, you can also use the following keyboard keys:
+            <ul>
+              <li>Forward: <code>I</code></li>
+              <li>Reverse: <code>K</code></li>
+              <li>Left: <code>J</code> </li>
+              <li>Right: <code>L</code></li>
+            </ul>
+          </p>
+          <p>
+            <strong>Gamepad</strong> control is enabled by the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API">HTML5 gamepad API</a>, currently supported by Chrome and Firefox. Playstation 3 controllers have been confirmed to work.
+          </p>
+          <p>
+            <strong>Device tilt</strong> control is enabled for devices with <a href="https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation">device orientation sensors</a>, and should work with most modern smartphones. Hold your device in landscape mode, tilt  forward/backward for throttle and left/right for steering.
+          </p>
+          <p>
+            <strong>Pilot Mode</strong> can be toggled or chosen using the keyboard.
+            <ul>
+              <li>Toggle Pilot <b>M</b>ode: <code>M</code></li> 
+              <li><b>U</b>ser Mode: <code>U</code></li> 
+              <li>Auto <b>S</b>teering  Mode: <code>S</code></li> 
+              <li>Full <b>A</b>uto Mode: <code>A</code></li> 
+            </ul>
+          </p>
+          <p>
+            <strong>Recording</strong> can be toggled using the keyboard.
+            <ul><li>Toggle <b>R</b>ecording: <code>R</code></li></ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script type="text/javascript">
+  $( document ).ready(function() {
+    console.log( "document ready!" );
+    driveHandler.load()
+  });
+</script>
+<small>
+<div class="container" style="width:80%;">
+  <div class="row">
+    <div class="col-md-2">
+      <div class="protoxydebloc"  {{ "style=display:none;" if not COPILOT_PROTOXYDE else '' }}  >      
+        <table width="80%" class=optbloc >
+        <tr colspan="2" ><td><label>Protoxyde</label></td></tr>
+        <tr><td>THROTTLE_MIN</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_PROTOXYDE_THROTTLE_MIN" min="0" max="1" step="0.001" ><td></tr>
+        <tr><td>THROTTLE_MULT</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_PROTOXYDE_THROTTLE_MULT" min="0" max="20" step="0.01" ><td></tr>
+        <tr><td>ACCELERATION</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_PROTOXYDE_ACCELERATION" min="0" max="10" step="0.01" ><td></tr>
+        <tr><td>DECELERATION</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_PROTOXYDE_DECELERATION" min="0" max="10" step="0.01" ><td></tr>
+        <tr><td>NB_SAMPLE</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_PROTOXYDE_NB_SAMPLE" min="0" max="50" step="1" ><td></tr>
+        <tr><td>COEFF_MAX</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_PROTOXYDE_COEFF_MAX" min="0" max="10" step="0.01" ><td></tr>
+        <tr><td>THRESHOLD_HIGH</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_PROTOXYDE_THRESHOLD_HIGH" min="0" max="1" step="0.01" ><td></tr>
+        <tr><td>THRESHOLD_LOW</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_PROTOXYDE_THRESHOLD_LOW" min="0" max="1" step="0.01" ><td></tr>
+        <tr><td>ANGLE_LOW_COEF</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_PROTOXYDE_ANGLE_LOW_COEF" min="0" max="255" step="0.01" ><td></tr>  
+        </table> 
+      </div>
+    </div>
+    <div class="transformbloc"  {{ "style=display:none;" if not COPILOT_TRANSFORM else '' }}  >
+      <div class="col-md-1">
+        <label>Transformation</label>
+        <table id="sortable" width=100%>
+          {% for t in COPILOT_TRANSFORM_LIST %}
+            <tr><td><span type="button" class="btn btn-info btn-block btn-sm"><span style="float:left"><input onclick="transformClick(this)" type="checkbox" id="{{ t }}" name="transformcheck" checked></span>&nbsp;{{ t }}&nbsp;</span></td></tr>
+          {% end %}
+          {% for t in COPILOT_TRANSFORM_LIST_ALL %}
+            {% if t not in COPILOT_TRANSFORM_LIST %}
+            <tr><td><span type="button" class="btn btn-info btn-block btn-sm"><span style="float:left"><input onclick="transformClick(this)" type="checkbox" id="{{ t }}" name="transformcheck" ></span>&nbsp;{{ t }}&nbsp;</span></td></tr>
+            {% end %}
+          {% end %}
+        </table>
+      </div>
+      <div class="col-md-2 cornercut" {{ "style=display:none;" if "cornercut" not in COPILOT_TRANSFORM_LIST else '' }} >
+        <table width="80%" class=optbloc >
+        <tr colspan="2"><td><label>cornercut</label></td></tr>
+        <tr><td>TOP</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_CORNERCUT_TOP" min="0" max="100" step="1" ></td></tr>
+        <tr><td>SIDE</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_CORNERCUT_SIDE" min="0" max="100" step="1" ></td></tr>
+        </table>
+      </div>
+      <div class="col-md-2 brightContrast" {{ "style=display:none;" if "brightContrast" not in COPILOT_TRANSFORM_LIST else '' }}>
+        <table width="80%" class=optbloc >
+          <tr colspan="2"><td><label>brightContrast</label></td></tr>
+          <tr><td>BRIGHTNESS</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_BRIGHTNESS" min="0" max="255" step="1"></td></tr>
+          <tr><td>CONTRAST</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_CONTRAST" min="0" max="255" step="1" ></td></tr>
+        </table>
+      </div> 
+      <div class="col-md-2 warp" {{ "style=display:none;" if "warp" not in COPILOT_TRANSFORM_LIST else '' }}>
+        <table width="80%" class=optbloc >
+        <tr colspan="2"><td><label>warp</label></td></tr>
+        <tr><td>TOP &nbsp;</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_WARP_PADDING_TOP" min="0" max="255" step="0.01"></td></tr>
+        <tr><td>BOTTOM</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_WARP_PADDING_BOTTOM" min="0" max="255" step="0.01"></td></tr>
+        <tr><td>BACK</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_WARP_PADDING_WIDTH_BACK" min="0" max="255" step="0.01"></td></tr>
+        <tr><td>FRONT</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_WARP_PADDING_WIDTH_FRONT" min="0" max="255" step="0.01" ></td></tr>
+        </table>
+      </div>
+      <div class="col-md-2 laplacian" {{ "style=display:none;" if "laplacian" not in COPILOT_TRANSFORM_LIST else '' }}>
+        <table width="80%" class=optbloc>
+        <tr colspan="2"><td><label>laplacian</label></td></tr>
+        <tr><td>BLUR</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_LAPLACIAN_BLUR" min="1" max="21" step="2"></td></tr>
+        <tr><td>THRES_LOW</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_LAPLACIAN_THRES_LOW"" min="0" max="255" step="1"></td></tr>
+        <tr><td>THRES_HIGH</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_LAPLACIAN_THRES_HIGH" min="0" max="255" step="1"></td></tr>
+        <tr><td>DEPTH</td><td><input onchange="clickvalue(this)" type="number" id="COPILOT_LAPLACIAN_DEPTH" min="0" max="3" step="1"></td></tr>
+        <tr><td colspan="2">
+          SHARPEN Filter
+          <table class=tablesharpen border=1 style="border:solid 1px">
+            <tr><td class=COPILOT_LAPLACIAN_SHARPEN_DIAG>{{ COPILOT_LAPLACIAN_SHARPEN_DIAG }}</td><td class="COPILOT_LAPLACIAN_SHARPEN_CROSS">{{ COPILOT_LAPLACIAN_SHARPEN_CROSS }}</td><td ><input class=COPILOT_LAPLACIAN_SHARPEN_DIAG style="background-color:lightgray" onchange="clickvalue(this)" type="number" id="COPILOT_LAPLACIAN_SHARPEN_DIAG" min="-20" max="20" step="1"></td></tr>
+            <tr><td ><input class=COPILOT_LAPLACIAN_SHARPEN_CROSS onchange="clickvalue(this)" type="number" id="COPILOT_LAPLACIAN_SHARPEN_CROSS" min="-20" max="20" step="1"></td><td><input onchange="clickvalue(this)" type="number" class=COPILOT_LAPLACIAN_SHARPEN_CENTER id="COPILOT_LAPLACIAN_SHARPEN_CENTER" min="-20" max="20" step="1"></td><td class="COPILOT_LAPLACIAN_SHARPEN_CROSS">{{ COPILOT_LAPLACIAN_SHARPEN_CROSS }}</td></tr>
+            <tr><td class=COPILOT_LAPLACIAN_SHARPEN_DIAG>{{ COPILOT_LAPLACIAN_SHARPEN_DIAG }}</td><td class="COPILOT_LAPLACIAN_SHARPEN_CROSS">{{ COPILOT_LAPLACIAN_SHARPEN_CROSS }}</td><td class=COPILOT_LAPLACIAN_SHARPEN_DIAG>{{ COPILOT_LAPLACIAN_SHARPEN_DIAG }}</td></tr>
+          </table>
+        </td></tr>
+      </table>
+      </div>      
+    </div>
+   </div>
+</div>
+</small>
+ 
+<!-- Modal modalreport -->
+<div id="modalreport" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+              <span id="report"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+  var proto_socket = new WebSocket('ws://' + location.host + '/wsDrive');
+  data_copilot = '{% raw json_encode(all_dic) %}';
+  data_copilot = JSON.parse(data_copilot)
+  for (var key in data_copilot){
+    var element = document.getElementById(key);
+    if (element) { 
+      if (typeof data_copilot[key] === "boolean") {
+        if (data_copilot[key] ){element.checked = true; } 
+      } else {        
+        element.value = data_copilot[key];
+      }    
+    }
+  }
+  var clickvalue = function (el) {
+    var obj = {} 
+    if (el.getAttribute('type') === 'checkbox'){
+      obj[el.id]=el.checked
+      if (el.id == 'COPILOT_PROTOXYDE'){ $('.protoxydebloc').toggle(); }
+      if (el.id == 'COPILOT_TRANSFORM'){ $('.transformbloc').toggle(); }
+      if (el.id == 'COPILOT_STEPCOUNTER'){ $('.stepbloc').toggle(); }
+    } else {
+      if (el.id == 'COPILOT_LAPLACIAN_SHARPEN_DIAG'){
+        $('.COPILOT_LAPLACIAN_SHARPEN_DIAG').each(function() { $(this).html(el.value); });
+      }
+      if (el.id == 'COPILOT_LAPLACIAN_SHARPEN_CROSS'){
+        $('.COPILOT_LAPLACIAN_SHARPEN_CROSS').each(function() { $(this).html(el.value); });
+      }
+
+      obj[el.id]=Number(el.value)
+    }    
+    proto_socket.send(JSON.stringify(obj))
+    console.log(obj)
+  }
+  var transformClick= function (el) {
+    var obj = [];
+    if (el  !== undefined && ! el.checked) {
+      $("."+el.id).hide();
+    }  
+    var checkboxes = document.querySelectorAll('input[name=transformcheck]:checked')
+    for (var i = 0; i < checkboxes.length; i++) {
+      obj.push(checkboxes[i].id)
+      $("."+checkboxes[i].id).show();
+    }
+    proto_socket.send(JSON.stringify({'COPILOT_TRANSFORM_LIST':obj}))
+    console.log(obj)
+  } 
+
+  $( function() {
+    $( "#sortable" ).sortable({
+      items: 'tr',
+    }      
+    );
+    $( "#sortable" ).on( "sortupdate", function( event, ui ) {
+      transformClick();
+    } );
+  } );
+  // maj du dict renvoyé par /debug
+  setInterval(function () {
+    if( $('input[name=jsupdate]').is(':checked') ){
+      var url="/debug";
+      $.get(url).then(function(data){ 
+        document.getElementById("debuginfo").innerHTML = data['html']
+        if (data.hasOwnProperty("report")) {
+          document.getElementById("report").innerHTML = data['report']
+          console.log(data['modalreport'])
+          $("#modalreport").modal("show");
+          $(".reportbtn").show();
+        }
+      });
+    }else{
+      document.getElementById("debuginfo").innerHTML = ""
+    }
+  }, 2000);
+  var saveconfig = function (el) {
+      var value = document.getElementById("configname").innerHTML;
+      if (value == "myconfig"){ value="default";}
+      let name = prompt("Please enter config name",value);  
+      if (name !== "" && name !== null) {
+          var obj = {'saveconfig':name}  
+          proto_socket.send(JSON.stringify(obj))
+          console.log(obj)
+          setTimeout(function() {
+            location.reload();
+          }, 500);
+        }
+      }
+
+  var loadconfig = function (el) {
+      if (el !== "Load Config"){
+        var obj = {'loadconfig':el}
+        console.log(obj)
+        proto_socket.send(JSON.stringify(obj))
+        setTimeout(function() {
+          location.reload();
+        }, 500);
+      }
+
+    }
+  var  restartrace = function (el) {
+      var obj = {'COPILOT_STEPCOUNTER':null}
+      console.log(obj)
+      proto_socket.send(JSON.stringify(obj))
+  }
+</script>
+
+{% end %}
