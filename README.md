@@ -2,7 +2,7 @@
 
 using donkeycar v4.3.18 ...
 
-
+    cd /home/pi
     git clone https://github.com/autorope/donkeycar
     cd donkeycar
     git fetch --all --tags
