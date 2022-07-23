@@ -8,6 +8,6 @@ sudo raspi-config
 
     enable camera + i2c + expand filesystem
 
-### install :
+### Install :
 
     wget -O - https://github.com/gsbigbear/picar/blob/main/install.sh | sudo bash
