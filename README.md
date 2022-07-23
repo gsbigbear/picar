@@ -17,7 +17,17 @@ Add wpa_supplicant.conf on /boot
         psk="key"
     }
    
+### Configure ssh on linux
+
+Add alias in /etc/hosts
+
+   sudo nano /etc/hosts
    
+   192.168.0.88   picar
+
+   ssh-copy-id picar@pi
+   
+   raspberry
 
 
 ### Configure
