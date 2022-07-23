@@ -7,7 +7,7 @@ sudo apt-get install -y tmux mplayer python3-opencv
 cd /home/pi
 python3 -m virtualenv -p python3 env --system-site-packages
 echo "source ~/env/bin/activate" >> ~/.bashrc
-~/env/bin/activate
+source ~/.bashrc
 git clone https://github.com/autorope/donkeycar
 cd donkeycar
 git fetch --all --tags
