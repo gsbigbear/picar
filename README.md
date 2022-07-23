@@ -45,4 +45,4 @@ CM4 USB
 
 ### Install :
 
-    wget -O - https://raw.githubusercontent.com/gsbigbear/picar/main/install.sh | sudo bash
+    wget -O - https://raw.githubusercontent.com/gsbigbear/picar/main/install.sh | bash
