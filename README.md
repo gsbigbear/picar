@@ -5,7 +5,7 @@
 
 ### Wifi & ssh
 
-Add ssh file on /boot/
+Add ssh file on /boot
    
 Add wpa_supplicant.conf on /boot
 
