@@ -29,7 +29,7 @@ Add alias
 
 Exchange key
 
-    ssh-copy-id picar@pi
+    ssh-copy-id pi@picar
    
     raspberry
     
