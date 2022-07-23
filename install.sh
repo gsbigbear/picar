@@ -12,7 +12,6 @@ git clone https://github.com/autorope/donkeycar
 cd donkeycar
 git fetch --all --tags
 git checkout 4.3.6-17-g5143794
-python3.7 -m pip install
 pip install -e .[pi]
 pip install https://github.com/lhelontra/tensorflow-on-arm/releases/download/v2.2.0/tensorflow-2.2.0-cp37-none-linux_armv7l.whl
 cd /home/pi
