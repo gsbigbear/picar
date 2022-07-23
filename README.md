@@ -21,16 +21,16 @@ Add wpa_supplicant.conf on /boot
 
 Add alias in /etc/hosts
 
-
-   sudo nano /etc/hosts
+    sudo nano /etc/hosts
    
-   192.168.0.88   picar
+    192.168.0.88   picar
 
-   ssh-copy-id picar@pi
+Exchange key
+
+    ssh-copy-id picar@pi
    
-   raspberry
-
-
+    raspberry
+    
 ### Configure
 sudo raspi-config
 
