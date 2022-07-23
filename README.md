@@ -21,6 +21,7 @@ Add wpa_supplicant.conf on /boot
 
 Add alias in /etc/hosts
 
+
    sudo nano /etc/hosts
    
    192.168.0.88   picar
