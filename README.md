@@ -40,9 +40,15 @@ Exchange key
     raspberry
     
 ### Configure
-sudo raspi-config
 
-    enable camera + i2c + expand filesystem
+connect to pi:
+
+    ssh pi@picar
+
+
+enable camera + i2c + expand filesystem
+
+    sudo raspi-config
 
 ### Install :
 
