@@ -10,4 +10,4 @@ sudo raspi-config
 
 ### Install :
 
-    wget -O - https://github.com/gsbigbear/picar/blob/main/install.sh | sudo bash
+    wget -O - https://raw.githubusercontent.com/gsbigbear/picar/main/install.sh | sudo bash
