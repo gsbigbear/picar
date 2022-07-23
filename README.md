@@ -22,29 +22,8 @@ Add wpa_supplicant.conf on /boot
         ssid="ssid"
         psk="key"
     }
-   
-### Configure ssh on linux
-
-Edit /etc/hosts
-
-    sudo nano /etc/hosts
-
-Add alias 
-
-    192.168.0.88   picar
-
-Exchange key
-
-    ssh-copy-id pi@picar
-   
-    raspberry
     
 ### Configure
-
-connect to pi:
-
-    ssh pi@picar
-
 
 enable camera + i2c + expand filesystem
 
