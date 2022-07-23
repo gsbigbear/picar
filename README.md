@@ -4,6 +4,7 @@
 
 ### Configure
 sudo raspi-config
+
     enable camera + i2c + expand filesystem
 
 ### install :
