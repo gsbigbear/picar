@@ -19,10 +19,11 @@ Add wpa_supplicant.conf on /boot
    
 ### Configure ssh on linux
 
-Add alias in /etc/hosts
+Edit /etc/hosts
 
     sudo nano /etc/hosts
 
+Add alias 
 
     192.168.0.88   picar
 
