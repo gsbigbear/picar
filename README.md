@@ -4,9 +4,7 @@
 
 ### Configure
 sudo raspi-config
-    enbla camera
-    i2c
-    expand filesystem
+    enable camera + i2c + expand filesystem
 
 ### install :
 
