@@ -49,6 +49,20 @@ connect to pi:
 enable camera + i2c + expand filesystem
 
     sudo raspi-config
+    
+CM4 camera
+
+    sudo wget https://datasheets.raspberrypi.org/cmio/dt-blob-dualcam.bin -O /boot/dt-blob.bin
+   
+or
+   
+    sudo wget https://datasheets.raspberrypi.org/cmio/dt-blob-cam1.bin -O /boot/dt-blob.bin
+    
+    
+CM4 USB
+
+    echo "dtoverlay=dwc2,dr_mode=host" | sudo tee -a /boot/config.txt
+    
 
 ### Install :
 
