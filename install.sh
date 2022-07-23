@@ -17,5 +17,6 @@ pip3 install https://github.com/lhelontra/tensorflow-on-arm/releases/download/v2
 cd /home/pi
 pip3 install adafruit-circuitpython-ina219
 git clone https://github.com/gsbigbear/picar.git
+cd picar
 mkdir models
 mkdir data
