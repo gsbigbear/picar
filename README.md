@@ -1,4 +1,4 @@
-# picar - copilot fordonkeycar
+# picar - copilot for donkeycar
 
 Transform: webui
 
