@@ -20,3 +20,5 @@ git clone https://github.com/gsbigbear/picar.git
 cd picar
 mkdir models
 mkdir data
+sudo raspi-config nonint do_i2c 0
+echo "Need a reboot to apply i2c & cam"
